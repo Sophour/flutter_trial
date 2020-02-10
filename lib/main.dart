@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_tz/redux/actions.dart';
 import 'package:flutter_tz/videobox.dart';
 import 'package:video_player/video_player.dart';
+import 'redux/reducers.dart';
+import 'package:redux/redux.dart';
 
 
-void main() => runApp(MyApp());
+void main() {
+  final _store = new Store<bool>(soundModeReducer, initialState: true);
+  runApp(MyApp(store: _store));
+
+}
 
 class MyApp extends StatelessWidget {
+
+  final Store<bool> store;
+
+  MyApp({Key key, this.store}) : super(key:key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return new StoreProvider(
+        store: store,
+      child: new MaterialApp(
       title: 'ClipCarousel',
       theme: ThemeData(
         brightness: Brightness.dark,
@@ -19,9 +34,9 @@ class MyApp extends StatelessWidget {
 
       ),
       //debugShowCheckedModeBanner: false,
-      home: MyHomePage(title: 'Clip Carousel'),
+      home: MyHomePage(title: 'Clip Carousel', store: store,),
 
-    );
+    ));
 
   }
 
@@ -29,7 +44,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  final Store<bool> store;
+  MyHomePage({Key key, this.title, this.store}) : super(key: key);
 
 
   final String title;
@@ -37,14 +53,17 @@ class MyHomePage extends StatefulWidget {
 
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState(store);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+
+  final Store<bool> store;
+
+  _MyHomePageState(this.store);
 
   int _foremostVideo = 1;
-  VideoPlayerController playerController;
+  //VideoPlayerController playerController;
   VoidCallback listener;
   bool soundIsOn = true;
  List<String> videoSources = [
@@ -131,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
 
-            CarouselSlider(
+          new CarouselSlider(
               height: 200.0,
               enlargeCenterPage: true,
               onPageChanged: (index){
@@ -166,41 +185,48 @@ class _MyHomePageState extends State<MyHomePage> {
               }).toList(),
             ),
             //Text("Foremost video is $_foremostVideo"),
-          ],
 
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if(soundIsOn){
-          videoBoxes.forEach((vb){
-            if(vb.playerController != null)
-              vb.playerController.setVolume(0.0);
-          });
-          setState(() {
-            soundIsOn = false;
-          });
-          }
-          else{
-            videoBoxes.forEach((vb){
-              if(vb.playerController != null)
-                vb.playerController.setVolume(0.5);
-            });
-            setState((){
-              soundIsOn=true;
-              });
-          }
+        new StoreConnector<bool,OnSoundChangedCallback>(
+          converter: (store)=>(videoPlayers){ store.dispatch(SoundButtonToggleAction(store.state));},
+          builder: (context, callback) => new Container(
+            padding: EdgeInsets.all(16.0),
+            child: FloatingActionButton(
 
-
+          onPressed: () {
+          callback(videoBoxes.map((vb) => vb.playerController).toList());
+//          if(soundIsOn){
+//          videoBoxes.forEach((vb){
+//            if(vb.playerController != null)
+//              vb.playerController.setVolume(0.0);
+//          });
+//          setState(() {
+//            soundIsOn = false;
+//          });
+//          }
+//          else{
+//            videoBoxes.forEach((vb){
+//              if(vb.playerController != null)
+//                vb.playerController.setVolume(0.5);
+//            });
+//            setState((){
+//              soundIsOn=true;
+//              });
+//          }
 
       },
         tooltip: 'Sound switch',
-        child: soundIsOn?  Icon(Icons.volume_off) : Icon(Icons.volume_up),
+        child: store.state ?  Icon(Icons.volume_off) : Icon(Icons.volume_up),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+          )),
+
+      ],
+        ),
+    )
 
     );
-
   }
 
 
 }
+
+typedef OnSoundChangedCallback = Function(List<VideoPlayerController> videoPlayers);

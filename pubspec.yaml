@@ -26,8 +26,9 @@ dependencies:
   carousel_slider: ^1.3.0
   video_player:
   after_layout: ^1.0.7+2
-  redux:
-  flutter_built_redux: ^0.6.0
+  flutter_redux:
+  #redux:
+  #flutter_built_redux: ^0.6.0
 
 dev_dependencies:
   flutter_test:
