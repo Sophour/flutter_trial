@@ -1,5 +1,8 @@
 
 
+import 'package:flutter_tz/videobox.dart';
+import 'package:video_player/video_player.dart';
+
 class MuteSoundAction{
   final bool _muted;
 
@@ -13,6 +16,6 @@ class SoundOnAction{
 }
 
 class SoundButtonToggleAction{
-  final bool soundIsOn;
-  SoundButtonToggleAction(this.soundIsOn);
+  final List<VideoBox> videoBoxes;
+  SoundButtonToggleAction(this.videoBoxes);
 }

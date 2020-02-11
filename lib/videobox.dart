@@ -24,13 +24,13 @@ class VideoBox{
     );
   }
 
-  VideoBox createVideo(){
+  VideoBox createVideo(bool soundIsOn){
     if (playerController == null){
-      playerController = VideoPlayerController.network(videoUrl)
+      playerController = VideoPlayerController.asset(videoUrl)
         ..addListener(listener)
         ..setLooping(true)
+        ..setVolume(soundIsOn? 0.5 : 0.0)
         ..initialize();
-// setState?
       if(this.id==0 )
         this.playerController.play();
     }
@@ -50,5 +50,7 @@ class VideoBox{
 //    createVideo();
 //    playerController.play();
 //  }
+
+
 
 }

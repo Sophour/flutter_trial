@@ -63,7 +63,6 @@ class _MyHomePageState extends State<MyHomePage> {
   _MyHomePageState(this.store);
 
   int _foremostVideo = 1;
-  //VideoPlayerController playerController;
   VoidCallback listener;
   bool soundIsOn = true;
  List<String> videoSources = [
@@ -85,45 +84,36 @@ class _MyHomePageState extends State<MyHomePage> {
     listener = (){
       setState(() {} );
     };
+    for(var i=0; i<5; i++)
+    videoBoxes.add( new VideoBox( i,
+        "assets/videos/rage.mp4" /*videoSources[i-1]*/ ,
+        0 , store.state ? 0.5 : 0.0 , listener ) );
 
     super.initState();
-//
-//    if(videoBoxes[0].playerController != null)
-//      videoBoxes[0].playerController.play(); // Autoplay the first video
-//    else{
-//      showDialog (
-//        context: context ,
-//        builder: ( BuildContext context ) {
-//          return AlertDialog (
-//            content: new Text( "Fuck you" ) ,
-//          );
-//        } ,
-//      );
-//    }
 
   }
 
-  void showAlert(String msg) {
-    showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        content: new Text(msg),
-        actions: <Widget>[
-          new FlatButton(
-            child: new Text('DISMISS'),
-            onPressed: () => Navigator.of(context).pop(),
-          )
-        ],
-      ),
-    );
-  }
+//  void showAlert(String msg) {
+//    showDialog(
+//      context: context,
+//      builder: (context) => new AlertDialog(
+//        content: new Text(msg),
+//        actions: <Widget>[
+//          new FlatButton(
+//            child: new Text('DISMISS'),
+//            onPressed: () => Navigator.of(context).pop(),
+//          )
+//        ],
+//      ),
+//    );
+//  }
 
   @override
   void deactivate() {
     videoBoxes.forEach((vb){
       vb.playerController.removeListener(listener);
     vb.playerController.setVolume(0.0);});
-
+    videoBoxes.clear();
     super.deactivate();
   }
 
@@ -145,7 +135,10 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
+        child:   new StoreConnector<bool,OnSoundChangedCallback>(
+      converter: (store)=>(_){ store.dispatch(SoundButtonToggleAction(videoBoxes));},
+      builder: (context, callback) =>
+        new Column(
 
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -156,71 +149,50 @@ class _MyHomePageState extends State<MyHomePage> {
               onPageChanged: (index){
                 setState(() {
                   videoBoxes[index].playerController.play();
-                  videoBoxes[index].playerController.setVolume(soundIsOn? 0.5:0.0);
                   videoBoxes[previousCarouselPage].playerController.pause();
 
                   _foremostVideo = index+1;
                   previousCarouselPage = index;
                 });
               },
-              items: [1,2,3,4,5].map((i) {
-                videoBoxes.add( new VideoBox(i-1, /*"assets/videos/rage.mp4"*/videoSources[i-1], 0, 0.5, listener));
+              items: videoBoxes.map((vb){
                 return Builder(
-                  builder: (BuildContext context) {
+                  builder: ( BuildContext context ) {
                     return Container(
-                        width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      width: MediaQuery
+                          .of( context )
+                          .size
+                          .width,
+                      margin: EdgeInsets.symmetric( horizontal: 5.0 ),
 
-                        decoration: BoxDecoration(
-                            color: Colors.black,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
 
-                        ),
-                        //child: Text('Video $i', style: TextStyle(fontSize: 24.0, color: Colors.white), textAlign: TextAlign.center,),
-                      child: videoBoxes[i-1].createVideo().setVideoBox(),
+                      ),
+                      child: vb.createVideo(store.state).setVideoBox( ),
 
                     );
                   },
                 );
+              } ).toList( ),
+          ),
+            //Text("Num of videoboxes is ${videoBoxes.length}"),
 
-              }).toList(),
-            ),
-            //Text("Foremost video is $_foremostVideo"),
-
-        new StoreConnector<bool,OnSoundChangedCallback>(
-          converter: (store)=>(videoPlayers){ store.dispatch(SoundButtonToggleAction(store.state));},
-          builder: (context, callback) => new Container(
+       new Container(
             padding: EdgeInsets.all(16.0),
             child: FloatingActionButton(
 
           onPressed: () {
-          callback(videoBoxes.map((vb) => vb.playerController).toList());
-//          if(soundIsOn){
-//          videoBoxes.forEach((vb){
-//            if(vb.playerController != null)
-//              vb.playerController.setVolume(0.0);
-//          });
-//          setState(() {
-//            soundIsOn = false;
-//          });
-//          }
-//          else{
-//            videoBoxes.forEach((vb){
-//              if(vb.playerController != null)
-//                vb.playerController.setVolume(0.5);
-//            });
-//            setState((){
-//              soundIsOn=true;
-//              });
-//          }
+          callback(videoBoxes);
 
       },
         tooltip: 'Sound switch',
         child: store.state ?  Icon(Icons.volume_off) : Icon(Icons.volume_up),
       ), // This trailing comma makes auto-formatting nicer for build methods.
-          )),
+          ),
 
       ],
-        ),
+        )),
     )
 
     );
@@ -229,4 +201,4 @@ class _MyHomePageState extends State<MyHomePage> {
 
 }
 
-typedef OnSoundChangedCallback = Function(List<VideoPlayerController> videoPlayers);
+typedef OnSoundChangedCallback = Function(List<VideoBox> videoboxes);
