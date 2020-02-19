@@ -27,6 +27,7 @@ dependencies:
   video_player:
   after_layout: ^1.0.7+2
   flutter_redux:
+  webview_flutter:
   #redux:
   #flutter_built_redux: ^0.6.0
 

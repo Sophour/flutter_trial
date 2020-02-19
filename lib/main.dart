@@ -6,6 +6,7 @@ import 'package:flutter_tz/videobox.dart';
 import 'package:video_player/video_player.dart';
 import 'redux/reducers.dart';
 import 'package:redux/redux.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 
 void main() {
@@ -85,8 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {} );
     };
     for(var i=0; i<5; i++)
-    videoBoxes.add( new VideoBox( i,
-        "assets/videos/rage.mp4" /*videoSources[i-1]*/ ,
+    videoBoxes.add( new VideoBox( i, "assets/videos/rage.mp4" /*videoSources[i-1]*/ ,
         0 , store.state ? 0.5 : 0.0 , listener ) );
 
     super.initState();
