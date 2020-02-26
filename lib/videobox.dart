@@ -26,7 +26,7 @@ class VideoBox{
 
   VideoBox createVideo(bool soundIsOn){
     if (playerController == null){
-      playerController = VideoPlayerController.asset(videoUrl)
+      playerController = VideoPlayerController.network(videoUrl)//asset(videoUrl)
         ..addListener(listener)
         ..setLooping(true)
         ..setVolume(soundIsOn? 0.5 : 0.0)

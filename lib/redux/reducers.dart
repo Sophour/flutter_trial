@@ -11,13 +11,11 @@ bool soundModeReducer(bool soundIsOn, dynamic action){
 
 bool switchSound(bool soundIsOn, SoundButtonToggleAction action){
   if(soundIsOn){
-    action.videoBoxes.forEach((vb) => vb.playerController != null?
-    vb.playerController.setVolume(0):null);
+    action.videoBoxes.forEach((vb) => vb.playerController?.setVolume(0));
     return false;
   }
   else {
-    action.videoBoxes.forEach ( ( vb ) => vb.playerController != null?
-    vb.playerController.setVolume(50):null );
+    action.videoBoxes.forEach ( ( vb ) => vb.playerController?.setVolume(50));
      return true;
   }
 //bool switchSound(bool soundIsOn, SoundButtonToggleAction action){

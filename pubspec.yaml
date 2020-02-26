@@ -28,6 +28,7 @@ dependencies:
   after_layout: ^1.0.7+2
   flutter_redux:
   webview_flutter:
+  http: ^0.12.0+4
   #redux:
   #flutter_built_redux: ^0.6.0
 

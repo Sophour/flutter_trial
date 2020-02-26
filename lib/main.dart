@@ -86,8 +86,9 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {} );
     };
     for(var i=0; i<5; i++)
-    videoBoxes.add( new VideoBox( i, "assets/videos/rage.mp4" /*videoSources[i-1]*/ ,
-        0 , store.state ? 0.5 : 0.0 , listener ) );
+    videoBoxes.add( new VideoBox( i, 'https://www.twitch.tv/twitch/v/106400740'
+        /*"assets/videos/rage.mp4"*/ /*videoSources[i-1]*/
+        , 0 , store.state ? 0.5 : 0.0 , listener ) );
 
     super.initState();
 
