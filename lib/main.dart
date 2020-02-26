@@ -8,7 +8,7 @@ import 'redux/reducers.dart';
 import 'package:redux/redux.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-
+//TODO make this mess more object-oriented
 void main() {
   final _store = new Store<bool>(soundModeReducer, initialState: true);
   runApp(MyApp(store: _store));
