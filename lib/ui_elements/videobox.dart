@@ -34,22 +34,9 @@ class VideoBox{
       if(this.id==0 )
         this.playerController.play();
     }
-//    else{
-//      if(playerController.value.isPlaying){
-//        playerController.pause();
-//      }
-//      else{
-//        playerController.initialize();
-//        playerController.play();
-//      }
-//    }
+
   return this;
   }
-
-//  void play(){
-//    createVideo();
-//    playerController.play();
-//  }
 
 
 
